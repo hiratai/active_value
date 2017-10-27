@@ -1,8 +1,7 @@
 # ConstantRecord
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/constant_record`. To experiment with that code, run `bin/console` for an interactive prompt.
+Model for non database. However like ActiveRecord.
 
-TODO: Delete this and the text above, and describe your gem
 
 ## Installation
 
@@ -20,19 +19,27 @@ Or install it yourself as:
 
     $ gem install constant_record
 
+
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+class QuestionType < ConstantRecord::Base
+ 
+  attr_accessor :id, :symbol, :name
+  
+  Checkbox  = new id: 1, symbol: :checkbox, name: "Check Box"
+  Radio     = new id: 2, symbol: :radio,    name: "Radio Button"
+  Selectbox = new id: 3, symbol: :select,   name: "Select Box"
+  Text      = new id: 4, symbol: :text,     name: "Text Box"
+  TextArea  = new id: 5, symbol: :textarea, name: "Text Area"
+  
+end
+```
 
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/constant_record.
+Bug reports and pull requests are welcome on GitHub at https://github.com/hiratai/constant_record.
 
 
 ## License
