@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Taiki Hiramatsu"]
   spec.email         = ["ta.hi.samba@gmail.com"]
 
-  spec.summary       = %q{Model for non database. However like ActiveRecord.}
+  spec.summary       = %q{Model for non database.(ValueObject) However like ActiveRecord.}
   #spec.description   = %q{}
   spec.homepage      = "https://github.com/hiratai/active_value"
   spec.license       = "MIT"

@@ -1,6 +1,7 @@
 # ActiveValue
 
-Model for non database. However like ActiveRecord.
+Model for non database. (ValueObject)  
+However like ActiveRecord.
 
 
 ## Installation
