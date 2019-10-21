@@ -1,4 +1,4 @@
-# ConstantRecord
+# ActiveValue
 
 Model for non database. However like ActiveRecord.
 
@@ -8,7 +8,7 @@ Model for non database. However like ActiveRecord.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'constant_record'
+gem 'active_value'
 ```
 
 And then execute:
@@ -17,13 +17,13 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install constant_record
+    $ gem install active_value
 
 
 ## Usage
 
 ```ruby
-class QuestionType < ConstantRecord::Base
+class QuestionType < ActiveValue::Base
  
   attr_accessor :id, :symbol, :name
   
@@ -39,7 +39,7 @@ end
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/hiratai/constant_record.
+Bug reports and pull requests are welcome on GitHub at https://github.com/hiratai/active_value.
 
 
 ## License

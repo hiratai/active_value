@@ -1,17 +1,17 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'constant_record/version'
+require 'active_value/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "constant_record"
-  spec.version       = ConstantRecord::VERSION
+  spec.name          = "active_value"
+  spec.version       = ActiveValue::VERSION
   spec.authors       = ["Taiki Hiramatsu"]
   spec.email         = ["ta.hi.samba@gmail.com"]
 
   spec.summary       = %q{Model for non database. However like ActiveRecord.}
   #spec.description   = %q{}
-  spec.homepage      = "https://github.com/hiratai/constant_record"
+  spec.homepage      = "https://github.com/hiratai/active_value"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

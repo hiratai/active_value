@@ -1,7 +1,7 @@
 require "active_support/dependencies"
-require "constant_record/version"
+require "active_value/version"
 
-module ConstantRecord
+module ActiveValue
   extend ActiveSupport::Autoload
   autoload :Base
 end

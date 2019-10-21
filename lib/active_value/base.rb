@@ -1,6 +1,6 @@
 require "active_support/core_ext/hash/keys"
 
-module ConstantRecord
+module ActiveValue
   # TODO: English Translation
   # ActiveRecordライクに定数を定義するための基底クラス
   # このクラスを継承したクラス内で宣言した定数をレコードとして扱うことができる。
@@ -21,15 +21,17 @@ module ConstantRecord
     # ActiveRecordライクに使えるfind, find_by, all, pluckを定義
     def self.find(index); find_by(id: index); end
     def self.find_by(condition); all.find { |object| object.public_send(condition.keys.first) == condition.values.first }; end
-    def self.all; constants.collect { |name| const_get(name) }; end
+    def self.all
+      constants.collect { |name| const_get(name) }.sort
+    end
     def self.pluck(*accessors)
       map { |record| accessors.size > 1 ? Array(accessors).map { |accessor| record.public_send(accessor) } : record.public_send(accessors.first) }
     end
 
     # symbol要素の定義があれば、symbol名 + ? でインスタンスが同一のものか判別するメソッドを定義
-    def self.define_question_methods
+    def self.define_question_methods(attr_name = :symbol)
       constants.collect { |name| const_get(name) }.each do |object|
-        define_method(object.symbol.to_s + '?') { self == object } if object.respond_to?(:symbol)
+        define_method(object.public_send(attr_name).to_s + '?') { self == object } if object.respond_to?(attr_name)
       end
     end
 
@@ -41,19 +43,18 @@ module ConstantRecord
 
     # accessor一覧を取得するメソッド
     def self.accessors
-      @accessors
-      # readers = instance_methods.reject { |attr| attr.to_s[-1] == '=' }
-      # writers = instance_methods.select { |attr| attr.to_s[-1] == '=' }.map { |attr| attr.to_s.chop.to_sym }
-      # accessors = readers & writers - [:!]
-      # accessors.reverse!
+      readers = instance_methods.reject { |attr| attr.to_s[-1] == '=' }
+      writers = instance_methods.select { |attr| attr.to_s[-1] == '=' }.map { |attr| attr.to_s.chop.to_sym }
+      accessors = readers & writers - [:!]
+      Array(@accessors) | accessors.reverse!
     end
 
     # ActiveRecordのnewのようにハッシュで初期化を行える機能と
     # コピーコンストラクタ(に似た何か)を定義(Shallowコピー)
     def initialize(attributes = {})
       case attributes
-        when self.class then self.class.accessors.stringify_keys.each { |attribute| public_send(attribute + '=', attributes.public_send(attribute)) }
-        when Hash       then attributes.stringify_keys.each { |key, value| public_send(key + '=', value) if respond_to?(key + '=') }
+      when self.class then self.class.accessors.stringify_keys.each { |attribute| public_send(attribute + '=', attributes.public_send(attribute)) }
+      when Hash       then attributes.stringify_keys.each { |key, value| public_send(key + '=', value) if respond_to?(key + '=') }
       end
     end
 
@@ -70,10 +71,10 @@ module ConstantRecord
     def to_deep_hash
       scan = ->(value) do
         case value
-          when Hash           then value.inject(Hash.new) { |h, (k, v)| h[k] = scan.call(v); h }
-          when Array          then value.map { |v| scan.call(v) }
-          when ConstantRecord then scan.call(value.to_shallow_hash)
-          else value
+        when Hash           then value.inject(Hash.new) { |h, (k, v)| h[k] = scan.call(v); h }
+        when Array          then value.map { |v| scan.call(v) }
+        when ConstantRecord then scan.call(value.to_shallow_hash)
+        else value
         end
       end
       self.class.accessors.inject(Hash.new) { |hash, key| hash[key] = scan.call(public_send(key)); hash }
@@ -87,6 +88,13 @@ module ConstantRecord
     def inspect
       hash = to_shallow_hash
       Hash === hash ? '#<' << self.class.name.split('::').last << ' ' << hash.map { |key, value| key.to_s << ': ' << value.inspect }.join(', ') << '>' : hash.inspect
+    end
+
+    # Spaceship Operatorを定義、id等の比較可能な識別子が最初に定義されることが前提、存在しなければobject_idを参照する。
+    # TODO: ソート順序の基準となるattrの宣言を行うメソッドの実装
+    def <=>(another)
+      attr = self.class.accessors.first || :object_id
+      public_send(attr) <=> another.public_send(attr)
     end
 
   end
