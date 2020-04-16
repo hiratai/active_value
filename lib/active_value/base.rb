@@ -20,7 +20,11 @@ module ActiveValue
 
     # ActiveRecordライクに使えるfind, find_by, all, pluckを定義
     def self.find(index); find_by(id: index); end
-    def self.find_by(condition); all.find { |object| object.public_send(condition.keys.first) == condition.values.first }; end
+    def self.find_by(conditions)
+      all.find do |object|
+        conditions.all? { |key, value| object.public_send(key) == value }
+      end
+    end
     def self.all
       constants.collect { |name| const_get(name) }.sort
     end
