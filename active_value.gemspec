@@ -7,10 +7,10 @@ Gem::Specification.new do |spec|
   spec.name          = "active_value"
   spec.version       = ActiveValue::VERSION
   spec.authors       = ["Taiki Hiramatsu"]
-  spec.email         = ["ta.hi.samba@gmail.com"]
+  spec.email         = ["info@hiramatsu-sa-office.jp"]
 
-  spec.summary       = %q{Model for non database.(ValueObject) However like ActiveRecord.}
-  #spec.description   = %q{}
+  spec.summary       = %q{ActiveValue is base class for immutable value object that has interfaces like ActiveRecord.}
+  spec.description   = %q{In a class inherited this class, constant variables get the behavior like records of ActiveRecord.}
   spec.homepage      = "https://github.com/hiratai/active_value"
   spec.license       = "MIT"
 
@@ -30,9 +30,9 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.13"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "minitest", "~> 5.0"
+  spec.add_development_dependency "bundler", "> 1.0.0"
+  spec.add_development_dependency "rake", "> 10.0"
+  spec.add_development_dependency "minitest", "> 5.0"
 
   spec.add_dependency "activesupport"
 end
