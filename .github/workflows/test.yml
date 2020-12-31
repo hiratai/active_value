@@ -1,12 +1,10 @@
 name: Test
-
-on:
-  push: [push, pull_request]
-
+on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         ruby-version: [3.0, 2.7, 2.2]
   steps:
