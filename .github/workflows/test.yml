@@ -6,7 +6,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby-version: [3.0, 2.7, 2.2]
+        ruby: [3.0, 2.7, 2.2]
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
