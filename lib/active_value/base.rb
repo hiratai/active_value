@@ -90,6 +90,13 @@ module ActiveValue
       Array(@accessors) | accessors.reverse!
     end
 
+    # Wrapper dup method for can't dup on Fixnum#dup (NilClass etc.) before Ruby 2.4
+    def self.patched_dup(object)
+      object.dup
+    rescue TypeError
+      object
+    end
+
     # If self instance is passed as an argument, create a new instance that has copied attributes. (it's like copy constructor by shallow copy)
     # Hash instance is passed, the hash attributes apply a new instance.
     def initialize(attributes = {})
@@ -101,7 +108,7 @@ module ActiveValue
 
     # Convert to hash with shallow copy. If values include collections(Hash, Array, etc.), search and convert without elements of the collection.
     def to_shallow_hash
-      self.class.accessors.each_with_object({}) { |key, hash| hash[key] = public_send(key).freeze.dup }
+      self.class.accessors.each_with_object({}) { |key, hash| hash[key] = self.class.patched_dup(public_send(key)) }
     end
 
     # Convert to hash with deep copy. If values include collections(Hash, Array, etc.), search and convert into collections recursively.
@@ -111,7 +118,7 @@ module ActiveValue
         when Hash  then value.each_with_object({}) { |(k, v), h| h[k] = scan.call(v) }
         when Array then value.map { |v| scan.call(v) }
         when Base  then scan.call(value.to_shallow_hash)
-        else value.freeze.dup
+        else self.class.patched_dup(value)
         end
       end
       self.class.accessors.each_with_object({}) { |key, hash| hash[key] = scan.call(public_send(key)) }
