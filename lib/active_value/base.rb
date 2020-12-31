@@ -111,7 +111,7 @@ module ActiveValue
         when Hash  then value.each_with_object({}) { |(k, v), h| h[k] = scan.call(v) }
         when Array then value.map { |v| scan.call(v) }
         when Base  then scan.call(value.to_shallow_hash)
-        else value.dup
+        else value.respond_to?(:dup) ? value.dup : value
         end
       end
       self.class.accessors.each_with_object({}) { |key, hash| hash[key] = scan.call(public_send(key)) }
