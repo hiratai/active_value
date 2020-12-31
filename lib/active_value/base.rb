@@ -101,7 +101,7 @@ module ActiveValue
 
     # Convert to hash with shallow copy. If values include collections(Hash, Array, etc.), search and convert without elements of the collection.
     def to_shallow_hash
-      self.class.accessors.each_with_object({}) { |key, hash| hash[key] = public_send(key).dup }
+      self.class.accessors.each_with_object({}) { |key, hash| hash[key] = public_send(key).freeze.dup }
     end
 
     # Convert to hash with deep copy. If values include collections(Hash, Array, etc.), search and convert into collections recursively.
@@ -111,7 +111,7 @@ module ActiveValue
         when Hash  then value.each_with_object({}) { |(k, v), h| h[k] = scan.call(v) }
         when Array then value.map { |v| scan.call(v) }
         when Base  then scan.call(value.to_shallow_hash)
-        else value.respond_to?(:dup) ? value.dup : value
+        else value.freeze.dup
         end
       end
       self.class.accessors.each_with_object({}) { |key, hash| hash[key] = scan.call(public_send(key)) }
