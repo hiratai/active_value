@@ -97,5 +97,10 @@ class ActiveValueTest < Minitest::Test
     assert_nil TestRank::GOLD <=> 1, 0
   end
 
+  def test_question_method
+    assert_equal true, TestRank::GOLD.gold?
+    assert_equal false, TestRank::GOLD.silver?
+    assert_equal true, TestRank.all? { |rank| rank.public_send(rank.symbol.to_s + '?') }
+  end
 
 end

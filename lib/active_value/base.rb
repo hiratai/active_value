@@ -31,14 +31,8 @@ module ActiveValue
   class Base
 
     # Delegate undefined method calls to `all` method (returns Array).
-    # If objects have symbol attributes, the objects can be checked equivalence by the method named symbol + `?`
     def self.method_missing(method, *args, &block)
-      object = unsorted_all.find { |object| object.respond_to?(:symbol) && method.to_s == object.public_send(:symbol).to_s + '?' }
-      if object.nil?
-        all.public_send(method, *args, &block)
-      else
-        self == object
-      end
+      all.public_send(method, *args, &block)
     end
 
     # Getter interface by the id element like `find` method in ActiveRecord.
@@ -103,6 +97,16 @@ module ActiveValue
       case attributes
       when self.class then self.class.accessors.map(&:to_s).each { |attribute| public_send(attribute + '=', attributes.public_send(attribute)) }
       when Hash       then attributes.stringify_keys.each { |key, value| public_send(key + '=', value) if respond_to?(key + '=') }
+      end
+    end
+
+    # If objects have symbol attributes, the objects can be checked equivalence by the method named symbol + `?`
+    def method_missing(method, *args, &block)
+      object = self.class.unsorted_all.find { |object| object.respond_to?(:symbol) && method.to_s == object.public_send(:symbol).to_s + '?' }
+      if object.nil?
+        super
+      else
+        self == object
       end
     end
 
