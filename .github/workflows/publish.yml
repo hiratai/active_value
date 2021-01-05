@@ -1,5 +1,10 @@
 name: Publish
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+  push:
+    branches: [ $default-branch ]
+    tags:
+      - v*
 jobs:
   build:
     name: Build + Publish
@@ -22,6 +27,7 @@ jobs:
         env:
           GEM_HOST_API_KEY: "Bearer ${{ secrets.GITHUB_TOKEN }}"
           OWNER: ${{ github.repository_owner }}
+        continue-on-error: true
       - name: Publish to RubyGems
         run: |
           mkdir -p $HOME/.gem
@@ -32,3 +38,4 @@ jobs:
           gem push *.gem
         env:
           GEM_HOST_API_KEY: "${{ secrets.RUBYGEMS_AUTH_TOKEN }}"
+        continue-on-error: true
