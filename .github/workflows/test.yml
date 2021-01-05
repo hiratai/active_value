@@ -6,7 +6,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: [3.0, 2.7, 2.3]
+        ruby: [3.0, 2.7, 2.5, 2.3]
+    env:
+      BUNDLE_GEMFILE: gemfiles/ruby_${{ matrix.ruby }}.gemfile
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1

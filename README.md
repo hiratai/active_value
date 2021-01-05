@@ -1,12 +1,19 @@
+# ActiveValue
+
 ![TEST](https://img.shields.io/github/workflow/status/hiratai/active_value/Test?style=for-the-badge)
 ![RELEASE_VERSION](https://img.shields.io/github/v/release/hiratai/active_value?style=for-the-badge)
 ![GEM_VERSION](https://img.shields.io/gem/v/active_value?style=for-the-badge)
 ![LICENSE](https://img.shields.io/github/license/hiratai/active_value?style=for-the-badge)
 
-# ActiveValue
+#### Overviews
 
 ActiveValue::Base is base class for immutable value object that has interfaces like ActiveRecord.  
-In a class inherited this class, constant variables get the behavior like records of ActiveRecord.
+In a class inherited this class, constant variables get the behavior like records of ActiveRecord.  
+
+#### Supported Verisons
+
+Support Ruby 2.3 or later  
+Unit tests are passed with Ruby [2.3, 2.5, 2,7, 3.0] on GitHub Actions
 
 ## Installation
 
@@ -48,19 +55,36 @@ Then, constant variables in the class can be accessed by following methods.
 ```ruby
 FormCategory.find(1)
 => <#FormCategory id: 1, symbol: :checkbox, name: "Check Box" >
+# Also can be accessed by FormCategory::CHECK_BOX
 
-FormCategory.find_by(symbol: :radio).name
-=> "Radio Button"
+FormCategory.find_by(symbol: :checkbox).name
+=> "Check Box"
 
 FormCategory.find(1).checkbox?
 => true
 
-FormCategory.pluck(:id, :name)
-=> [[1, "Check Box"], [2, "Radio Button"], [3, "Select Box"], ...]
-
 FormCategory.find(2).to_h
 => { :id => 2, :symbol => :radio, :name => "Radio Button" }
 ```
+Getter methods for multiple objects are also provided.
+```ruby
+FormCategory.all
+=> [<#FormCategory id: 1, symbol: :checkbox, name: "Check Box" >, <#FormCategory id: 2, symbol: :radio, name: "Radio Button" >, ...]
+
+FormCategory.pluck(:id, :name)
+=> [[1, "Check Box"], [2, "Radio Button"], [3, "Select Box"], ...]
+
+# Undefined method calls delegate to the all method.
+FormCateory.select { |category| category.name.start_with("Text") }
+=> [<#FormCategory id: 4, symbol: :text, name: "Text Box" >, <#FormCategory id: 5, symbol: :textarea, name: "Text Area" >]
+```
+
+## Specified Attributes
+
+`id` and `symbol` are specified attributes. (not required)
+- If `id` attribute is defined, you can access a instance using `find` class method.  
+- If `symbol` attribute is defined, you can test a instance has the symbol like `FormCategory.find(1).checkbox?`.
+
 
 
 ## Contributing
