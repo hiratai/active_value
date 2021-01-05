@@ -140,7 +140,7 @@ module ActiveValue
 
     # Define the equal operator. `A == B` expression means every attribute has same value. (NOT object_id comparison)
     def ==(another)
-      self.class.accessors.all? { |attr| public_send(attr) == another.public_send(attr) }
+      self.class.accessors.all? { |attr| respond_to?(attr) && another.respond_to?(attr) && public_send(attr) == another.public_send(attr) }
     end
     alias_method :eql?, :==
 
